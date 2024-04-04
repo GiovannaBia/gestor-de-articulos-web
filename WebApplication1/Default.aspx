@@ -2,5 +2,8 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-    <h1>Ap de articulos</h1>
+    <div class="container">
+            <h1>App de articulos</h1>
+    </div>
+
 </asp:Content>
