@@ -18,5 +18,15 @@ namespace Dominio
 
         public string ImagenUrl { get; set; }
         public decimal Precio { get; set; }
+
+        public Articulo()
+        {
+
+        }
+
+        public Articulo (int id)
+        {
+
+        }
     }
 }

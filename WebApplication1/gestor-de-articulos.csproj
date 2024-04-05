@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Default.aspx" />
+    <Content Include="DetalleArticulo.aspx" />
     <Content Include="ListaArticulo.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -75,6 +76,13 @@
     </Compile>
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="DetalleArticulo.aspx.cs">
+      <DependentUpon>DetalleArticulo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="DetalleArticulo.aspx.designer.cs">
+      <DependentUpon>DetalleArticulo.aspx</DependentUpon>
     </Compile>
     <Compile Include="ListaArticulo.aspx.cs">
       <DependentUpon>ListaArticulo.aspx</DependentUpon>
