@@ -23,7 +23,7 @@ namespace Negocio
 
                 while (datos.Lector.Read())
                 {
-                    art = new Articulo();
+                    art = new Articulo();   
 
                     art.Id = int.Parse(datos.Lector["Id"].ToString());
                     art.Codigo = datos.Lector["Codigo"].ToString();

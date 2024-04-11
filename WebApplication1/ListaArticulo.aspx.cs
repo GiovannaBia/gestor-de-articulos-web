@@ -16,5 +16,10 @@ namespace WebApplication1
             dgvArticulos.DataSource = negocio.listarConSP();
             dgvArticulos.DataBind();
         }
+
+        protected void btnAgregar_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
