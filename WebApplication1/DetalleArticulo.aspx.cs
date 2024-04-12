@@ -30,8 +30,14 @@ namespace WebApplication1
                     txtMarca.Text = art.Marca != null ? art.Marca.ToString() : string.Empty;
                     txtCategoria.Text = art.Categoria != null ? art.Categoria.ToString() : string.Empty;
                     txtPrecio.Text = art.Precio.ToString();
+                    txtImagen.ImageUrl = art.ImagenUrl;
                 }
             }
+        }
+
+        protected void btnAtras_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("Default.aspx");
         }
     }
 }
