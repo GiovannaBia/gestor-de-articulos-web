@@ -15,6 +15,7 @@
                 <asp:BoundField HeaderText="Descripcion" DataField="Descripcion" />
                 <asp:BoundField HeaderText="Marca" DataField="Marca.Descripcion" />
                 <asp:BoundField HeaderText="Categoria" DataField="Categoria.Descripcion" />
+                <asp:BoundField HeaderText="Precio" DataField="Precio" />
                 <asp:CommandField HeaderText="Editar"  ShowSelectButton="true" SelectText="✍️" />
             </Columns>
         </asp:GridView>

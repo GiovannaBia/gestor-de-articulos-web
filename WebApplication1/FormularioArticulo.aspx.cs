@@ -15,6 +15,7 @@ namespace WebApplication1
         {
             try
             {
+                // Configuracion inicial
                 if (!IsPostBack)
                 {
                     MarcaNegocio negoM = new MarcaNegocio();
@@ -31,11 +32,30 @@ namespace WebApplication1
                     ddlCategoria.DataTextField = "Descripcion";
                     ddlCategoria.DataBind();
                 }
+                
+                //Configuracion para modificar pokemon
+
+                if (Request.QueryString["id"] != null && !IsPostBack)
+                {
+                    ArticuloNegocio negocio = new ArticuloNegocio();
+                    List<Articulo> lista = negocio.Listar(Request.QueryString["id"].ToString());
+                    Articulo seleccionado = lista[0];
+
+                    // Precarga de campos
+                    txtCodigo.Text = seleccionado.Codigo;
+                    txtNombre.Text = seleccionado.Nombre;
+                    txtDescripcion.Text = seleccionado.Descripcion;
+                    txtUrl.Text = seleccionado.ImagenUrl;
+                    ddlMarca.SelectedValue = seleccionado.Marca.Id.ToString();
+                    ddlCategoria.SelectedValue = seleccionado.Categoria.Id.ToString();
+                    txtPrecio.Text = seleccionado.Precio.ToString();
+                    txtUrl_TextChanged(sender, e);
+                }
             }
             catch (Exception ex)
             {
                 Session.Add("Error", ex);
-                throw;
+                throw ex;
             }
         }
 
@@ -60,8 +80,17 @@ namespace WebApplication1
                 nuevo.Marca.Id = int.Parse(ddlMarca.SelectedValue);
                 nuevo.Categoria = new Categoria();
                 nuevo.Categoria.Id = int.Parse(ddlCategoria.SelectedValue);
+          
+                if (Request.QueryString["id"] != null )
+                {
+                    nuevo.Id = int.Parse(Request.QueryString["id"]);
+                    negocio.modificar(nuevo);
+                }
+                else
+                {
+                    negocio.agregarConSP(nuevo);
+                }
 
-                negocio.agregarConSP(nuevo);
                 Response.Redirect("ListaArticulo.aspx", false);
 
             }

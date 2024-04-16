@@ -11,43 +11,41 @@ namespace Negocio
 {
     public class ArticuloNegocio
     {
+        
         public Articulo buscarPorId(int id)
         {
-            Articulo art = null;
             AccesoDatos datos = new AccesoDatos();
+            Articulo art = new Articulo();
+
             try
             {
-                datos.setearConsulta("SELECT A.Id, A.Codigo, A.Nombre, A.Descripcion, M.Descripcion as MarcaNombre, C.Descripcion as CategoriaNombre, A.ImagenUrl, A.Precio FROM ARTICULOS A INNER JOIN MARCAS M ON M.Id = A.IdMarca INNER JOIN CATEGORIAS C ON C.Id = A.IdCategoria WHERE A.Id = @id");
+                datos.setearConsulta("A.Id, A.Codigo, A.Nombre, A.Descripcion, M.Nombre as MarcaNombre, C.Nombre as CategoriaNombre, A.ImagenUrl, A.Precio FROM ARTICULOS A INNER JOIN MARCAS M ON M.Id = A.IdMarca INNER JOIN CATEGORIAS C ON C.Id = A.IdCategoria WHERE A.Id = @id");
                 datos.setearParametro("@id", id);
-                datos.ejecutarLectura();
 
                 while (datos.Lector.Read())
                 {
-                    art = new Articulo();   
-
                     art.Id = int.Parse(datos.Lector["Id"].ToString());
                     art.Codigo = datos.Lector["Codigo"].ToString();
-                    art.Nombre = datos.Lector["Nombre"].ToString() ;
+                    art.Nombre = datos.Lector["Nombre"].ToString();
                     art.Descripcion = datos.Lector["Descripcion"].ToString();
-                    art.Marca = new Marca { Descripcion = datos.Lector["MarcaNombre"].ToString() };
-                    art.Categoria = new Categoria { Descripcion = datos.Lector["CategoriaNombre"].ToString() };
                     art.ImagenUrl = datos.Lector["ImagenUrl"].ToString();
+                    art.Marca.Descripcion = datos.Lector["Marca"].ToString();
+                    art.Categoria.Descripcion = datos.Lector["Categoria"].ToString();
                     art.Precio = decimal.Parse(datos.Lector["Precio"].ToString());
-
+                    
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+
+                throw;
             }
             finally
             {
                 datos.cerrarConexion();
             }
             return art;
-
         }
-
 
         public void agregarConSP(Articulo nuevo)
         {
@@ -78,8 +76,7 @@ namespace Negocio
             }
         }
 
-
-        public List<Articulo> Listar ()
+        public List<Articulo> Listar (string id = "")
         {
             List<Articulo> lista = new List<Articulo>();
 
@@ -93,7 +90,11 @@ namespace Negocio
                 //configuro 
                 conexion.ConnectionString = "server=DESKTOP-5VE62F0\\SQLEXPRESS; database=CATALOGO_DB; integrated security=true";
                 comando.CommandType = System.Data.CommandType.Text;
-                comando.CommandText = "SELECT A.Id, A.Codigo, A.Nombre, A.Descripcion, A.IdMarca, M.Descripcion as Marca, A.IdCategoria, C.Descripcion as Categoria, A.ImagenUrl, A.Precio FROM ARTICULOS A, MARCAS M, CATEGORIAS C where M.Id = A.IdMarca and C.Id=A.IdCategoria";
+                comando.CommandText = "SELECT A.Id, A.Codigo, A.Nombre, A.Descripcion, A.IdMarca, M.Descripcion as Marca, A.IdCategoria, C.Descripcion as Categoria, A.ImagenUrl, A.Precio FROM ARTICULOS A, MARCAS M, CATEGORIAS C where M.Id = A.IdMarca and C.Id=A.IdCategoria ";
+                if (id != "")
+                {
+                    comando.CommandText += " AND A.Id = " + id;
+                }
 
                 //ejecuto ese comando en la conexion asignada
                 comando.Connection = conexion;
