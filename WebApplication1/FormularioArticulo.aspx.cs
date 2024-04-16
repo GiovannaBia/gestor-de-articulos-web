@@ -11,10 +11,13 @@ namespace WebApplication1
 {
     public partial class FormularioArticulo : System.Web.UI.Page
     {
+        public bool ConfirmarEliminacion {get; set;}
         protected void Page_Load(object sender, EventArgs e)
         {
+            int id;
             try
             {
+                ConfirmarEliminacion = false;
                 // Configuracion inicial
                 if (!IsPostBack)
                 {
@@ -32,16 +35,19 @@ namespace WebApplication1
                     ddlCategoria.DataTextField = "Descripcion";
                     ddlCategoria.DataBind();
                 }
-                
+
+               
                 //Configuracion para modificar pokemon
 
                 if (Request.QueryString["id"] != null && !IsPostBack)
                 {
+                   
                     ArticuloNegocio negocio = new ArticuloNegocio();
                     List<Articulo> lista = negocio.Listar(Request.QueryString["id"].ToString());
                     Articulo seleccionado = lista[0];
 
                     // Precarga de campos
+                    txtId.Text = (seleccionado.Id).ToString() ;
                     txtCodigo.Text = seleccionado.Codigo;
                     txtNombre.Text = seleccionado.Nombre;
                     txtDescripcion.Text = seleccionado.Descripcion;
@@ -98,6 +104,28 @@ namespace WebApplication1
             {
                 Session.Add("Error", ex);
                 throw;
+            }
+        }
+
+        protected void btnEliminar_Click(object sender, EventArgs e)
+        {
+            ConfirmarEliminacion = true;
+        }
+
+        protected void btnConfirmaEliminar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (chkConfirmaEliminacion.Checked)
+                {
+                    ArticuloNegocio negocio = new ArticuloNegocio();
+                    negocio.eliminar(int.Parse(txtId.Text));
+                    Response.Redirect("ListaArticulo.aspx");
+                }
+            }
+            catch (Exception ex)
+            {
+                Session.Add("error", ex);
             }
         }
     }

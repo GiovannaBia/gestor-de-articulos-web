@@ -7,6 +7,9 @@
     <div class="row">
         <div class="col-6">
             <div class="mb-3">
+                    <asp:TextBox ID="txtId" runat="server" CssClass="form-control" Visible="false"></asp:TextBox>
+            </div>
+            <div class="mb-3">
                     <asp:Label ID="Label1" runat="server" Text="Código"></asp:Label>
                     <asp:TextBox ID="txtCodigo" runat="server" CssClass="form-control"></asp:TextBox>
             </div>
@@ -49,7 +52,24 @@
         </div>
     </div>
 
-
+    <div class="row">
+        <div class="col-6">
+            <asp:UpdatePanel runat="server">
+                <ContentTemplate>
+                    <div class="mb-3">
+                        <asp:Button text="Eliminar" runat="server" ID="btnEliminar" cssclass="btn btn-primary" OnClick="btnEliminar_Click"></asp:button>
+                    </div>
+                    <% if (ConfirmarEliminacion)
+                           { %>
+                                <div class="mb-3">
+                                    <asp:CheckBox Text="Confirmar eliminación" ID="chkConfirmaEliminacion" runat="server" />
+                                    <asp:Button text="Eliminar" runat="server" ID="btnConfirmaEliminar" cssclass="btn btn-outline-danger" OnClick="btnConfirmaEliminar_Click"></asp:button>
+                                </div>
+                       <% } %>
+                </ContentTemplate>
+            </asp:UpdatePanel>
+        </div>
+    </div>
 
 
 </asp:Content>

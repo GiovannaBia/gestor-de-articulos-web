@@ -19,7 +19,7 @@ namespace WebApplication1
 
         protected void btnAgregar_Click(object sender, EventArgs e)
         {
-
+            Response.Redirect("FormularioArticulo.aspx");
         }
 
         protected void dgvArticulos_SelectedIndexChanged(object sender, EventArgs e)
