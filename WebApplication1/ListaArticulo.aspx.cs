@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Negocio;
+using Dominio;
 
 namespace WebApplication1
 {
@@ -13,7 +14,8 @@ namespace WebApplication1
         protected void Page_Load(object sender, EventArgs e)
         {
             ArticuloNegocio negocio = new ArticuloNegocio();
-            dgvArticulos.DataSource = negocio.listarConSP();
+            Session.Add("listaArticulo", negocio.listarConSP());
+            dgvArticulos.DataSource = Session["listaArticulo"];
             dgvArticulos.DataBind();
         }
 
@@ -31,6 +33,14 @@ namespace WebApplication1
         protected void dgvArticulos_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             dgvArticulos.PageIndex = e.NewPageIndex;
+            dgvArticulos.DataBind();
+        }
+
+        protected void txtFiltro_TextChanged(object sender, EventArgs e)
+        {
+            List<Articulo> lista = (List<Articulo>)Session["listaArticulo"];
+            List<Articulo> listaFiltrada = lista.FindAll(x => x.Nombre.ToUpper().Contains(txtFiltro.Text.ToUpper()));
+            dgvArticulos.DataSource = listaFiltrada;
             dgvArticulos.DataBind();
         }
     }
