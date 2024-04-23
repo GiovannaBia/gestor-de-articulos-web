@@ -43,5 +43,25 @@ namespace WebApplication1
             dgvArticulos.DataSource = listaFiltrada;
             dgvArticulos.DataBind();
         }
+
+        protected void chkAvanzado_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void ddlCampo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void Unnamed_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void btnBuscar_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
