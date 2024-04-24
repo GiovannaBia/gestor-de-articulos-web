@@ -22,7 +22,7 @@
                    </div>
                 </div>
 
-                <% if (chkAvanzado.Checked)
+                <% if (FiltroAvanzado)
                     { %>
                         
                         <div class="row">

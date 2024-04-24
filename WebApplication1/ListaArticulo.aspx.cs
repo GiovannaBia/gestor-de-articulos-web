@@ -11,12 +11,17 @@ namespace WebApplication1
 {
     public partial class ListaArticulo : System.Web.UI.Page
     {
+        public bool FiltroAvanzado { get; set; }
         protected void Page_Load(object sender, EventArgs e)
         {
-            ArticuloNegocio negocio = new ArticuloNegocio();
-            Session.Add("listaArticulo", negocio.listarConSP());
-            dgvArticulos.DataSource = Session["listaArticulo"];
-            dgvArticulos.DataBind();
+            FiltroAvanzado = chkAvanzado.Checked;
+            if (!IsPostBack)
+            {
+                ArticuloNegocio negocio = new ArticuloNegocio();
+                Session.Add("listaArticulo", negocio.listarConSP());
+                dgvArticulos.DataSource = Session["listaArticulo"];
+                dgvArticulos.DataBind();
+            }
         }
 
         protected void btnAgregar_Click(object sender, EventArgs e)
@@ -46,17 +51,31 @@ namespace WebApplication1
 
         protected void chkAvanzado_CheckedChanged(object sender, EventArgs e)
         {
-
+            FiltroAvanzado = true;
+            txtFiltro.Enabled = !FiltroAvanzado;
         }
 
         protected void ddlCampo_SelectedIndexChanged(object sender, EventArgs e)
         {
-
-        }
-
-        protected void Unnamed_Click(object sender, EventArgs e)
-        {
-
+            ddlCriterio.Items.Clear();
+            if (ddlCampo.SelectedItem.ToString() == "Nombre")
+            {
+                ddlCriterio.Items.Add("Contiene ");
+                ddlCriterio.Items.Add("Comienza con ");
+                ddlCriterio.Items.Add("Termina con ");
+            }
+           else if (ddlCampo.SelectedItem.ToString() == "Marca")
+            {
+                ddlCriterio.Items.Add("Contiene ");
+                ddlCriterio.Items.Add("Comienza con ");
+                ddlCriterio.Items.Add("Termina con ");
+            }
+            if (ddlCampo.SelectedItem.ToString() == "Precio")
+            {
+                ddlCriterio.Items.Add("Igual a");
+                ddlCriterio.Items.Add("Mayor a ");
+                ddlCriterio.Items.Add("Menor a ");
+            }
         }
 
         protected void btnBuscar_Click(object sender, EventArgs e)
