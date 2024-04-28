@@ -16,6 +16,8 @@ namespace Negocio
         {
             AccesoDatos datos = new AccesoDatos();
             Articulo art = new Articulo();
+            art.Categoria = new Categoria();
+            art.Marca = new Marca();
 
             try
             {
