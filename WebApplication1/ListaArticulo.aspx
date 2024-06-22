@@ -22,8 +22,7 @@
                    </div>
                 </div>
 
-                <% if (FiltroAvanzado)
-                    { %>
+                <asp:Panel ID="pnlFiltroAvanzado" runat="server" Visible="false">
                         
                         <div class="row">
                             <div class="col-3">
@@ -49,24 +48,17 @@
                                     <asp:TextBox runat="server" CssClass="form-control" ID="txtFiltroAvanzado" />
                                 </div>
                             </div>
-                            <div class="col-3">
-                                <div class="mb-3">
-                                    <asp:Label Text="Estado" runat="server" />
-                                    <asp:DropDownList runat="server" ID="ddlEstado" CssClass="form-control">
-                                        <asp:ListItem Text="Todos" />
-                                        <asp:ListItem Text="Activos" />
-                                        <asp:ListItem Text="Inactivos" />
-                                    </asp:DropDownList>
-                                </div>
-                            </div>
                         </div>
                         <div class="row">
                             <div class="col-3">
                                 <asp:Button Text="Buscar" runat="server" CssClass="btn btn-primary" id="btnBuscar" OnClick="btnBuscar_Click" />
                             </div>
+                            <div class="col-3">
+                                <asp:Button Text="Limpiar" runat="server" CssClass="btn btn-warning" ID="btnLimpiar" OnClick="btnLimpiar_Click" />
+                            </div>
                         </div>
-
-                <% } %>
+                        <br />
+                </asp:Panel>
 
                   <asp:GridView ID="dgvArticulos" runat="server" AutoGenerateColumns="false" CssClass="table" DataKeyNames="Id"
                        OnSelectedIndexChanged="dgvArticulos_SelectedIndexChanged" 
@@ -82,7 +74,7 @@
                           <asp:CommandField HeaderText="Editar"  ShowSelectButton="true" SelectText="✍️" />
                       </Columns>
                   </asp:GridView>
-                <asp:Button runat="server" ID="btnAgregar" OnClick="btnAgregar_Click" Text="Agregar" CssClass="btn-dark" />
+                <asp:Button runat="server" ID="btnAgregar" OnClick="btnAgregar_Click" Text="Agregar" CssClass="btn btn-outline-secondary" />
             </ContentTemplate>
         </asp:UpdatePanel>
         

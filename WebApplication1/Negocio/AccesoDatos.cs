@@ -19,7 +19,7 @@ namespace Negocio
 
         public AccesoDatos() //constructor --> para cada vez que lo instancio, me crea con esa conezion y comando
         {
-            conexion = new SqlConnection("server=DESKTOP-5VE62F0\\SQLEXPRESS; database=CATALOGO_DB; integrated security=true");
+            conexion = new SqlConnection("server=DESKTOP-5VE62F0\\SQLEXPRESS; database=CATALOGO_WEB_DB; integrated security=true");
             comando = new SqlCommand();
 
         }
@@ -30,11 +30,7 @@ namespace Negocio
             comando.CommandText = consulta; 
         }
 
-        public void setearProcedimiento(string sp)
-        {
-            comando.CommandType = System.Data.CommandType.StoredProcedure;
-            comando.CommandText = sp;
-        }
+  
 
         public void setearParametro(string nombre, object valor)
         {
@@ -65,6 +61,21 @@ namespace Negocio
                 comando.ExecuteNonQuery();
             }
             catch (Exception ex) 
+            {
+
+                throw ex;
+            }
+        }
+
+        public int ejecutarAccionScalar()
+        {
+            comando.Connection = conexion;
+            try
+            {
+                conexion.Open();
+                return int.Parse(comando.ExecuteScalar().ToString());
+            }
+            catch (Exception ex)
             {
 
                 throw ex;

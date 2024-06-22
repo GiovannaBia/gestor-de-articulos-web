@@ -21,8 +21,10 @@ namespace Negocio
 
             try
             {
-                datos.setearConsulta("A.Id, A.Codigo, A.Nombre, A.Descripcion, M.Nombre as MarcaNombre, C.Nombre as CategoriaNombre, A.ImagenUrl, A.Precio FROM ARTICULOS A INNER JOIN MARCAS M ON M.Id = A.IdMarca INNER JOIN CATEGORIAS C ON C.Id = A.IdCategoria WHERE A.Id = @id");
+                datos.setearConsulta("SELECT A.Id, A.Codigo, A.Nombre, A.Descripcion, M.Descripcion as MarcaNombre, C.Descripcion as CategoriaNombre, A.ImagenUrl, A.Precio FROM ARTICULOS A INNER JOIN MARCAS M ON M.Id = A.IdMarca INNER JOIN CATEGORIAS C ON C.Id = A.IdCategoria WHERE A.Id = @id");
                 datos.setearParametro("@id", id);
+
+                datos.ejecutarLectura();
 
                 while (datos.Lector.Read())
                 {
@@ -31,8 +33,8 @@ namespace Negocio
                     art.Nombre = datos.Lector["Nombre"].ToString();
                     art.Descripcion = datos.Lector["Descripcion"].ToString();
                     art.ImagenUrl = datos.Lector["ImagenUrl"].ToString();
-                    art.Marca.Descripcion = datos.Lector["Marca"].ToString();
-                    art.Categoria.Descripcion = datos.Lector["Categoria"].ToString();
+                    art.Marca.Descripcion = datos.Lector["MarcaNombre"].ToString();
+                    art.Categoria.Descripcion = datos.Lector["CategoriaNombre"].ToString();
                     art.Precio = decimal.Parse(datos.Lector["Precio"].ToString());
                     
                 }
@@ -49,34 +51,7 @@ namespace Negocio
             return art;
         }
 
-        public void agregarConSP(Articulo nuevo)
-        {
-            AccesoDatos datos = new AccesoDatos();
-
-            try
-            {
-                datos.setearProcedimiento("storedAltaArticulo");
-                datos.setearParametro("@codigo", nuevo.Codigo);
-                datos.setearParametro("@nombre", nuevo.Nombre);
-                datos.setearParametro("@descripcion", nuevo.Descripcion);
-                datos.setearParametro("@idMarca", nuevo.Marca.Id);
-                datos.setearParametro("@idCategoria", nuevo.Categoria.Id);
-                datos.setearParametro("@img", nuevo.ImagenUrl);
-                datos.setearParametro("@precio", nuevo.Precio);
-
-                datos.ejecutarAccion();
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
-
-            finally
-            {
-                datos.cerrarConexion();
-            }
-        }
+        
 
         public List<Articulo> Listar (string id = "")
         {
@@ -90,12 +65,12 @@ namespace Negocio
             try
             {
                 //configuro 
-                conexion.ConnectionString = "server=DESKTOP-5VE62F0\\SQLEXPRESS; database=CATALOGO_DB; integrated security=true";
+                conexion.ConnectionString = "server=DESKTOP-5VE62F0\\SQLEXPRESS; database=CATALOGO_WEB_DB; integrated security=true";
                 comando.CommandType = System.Data.CommandType.Text;
                 comando.CommandText = "SELECT A.Id, A.Codigo, A.Nombre, A.Descripcion, A.IdMarca, M.Descripcion as Marca, A.IdCategoria, C.Descripcion as Categoria, A.ImagenUrl, A.Precio FROM ARTICULOS A, MARCAS M, CATEGORIAS C where M.Id = A.IdMarca and C.Id=A.IdCategoria ";
                 if (id != "")
                 {
-                    comando.CommandText += " AND A.Id = " + id;
+                    comando.CommandText += " AND A.Id = " + id; //si entro para modificar lleva un id
                 }
 
                 //ejecuto ese comando en la conexion asignada
@@ -129,46 +104,6 @@ namespace Negocio
 
                 throw ex;
             }
-        }
-
-        public List<Articulo> listarConSP()
-        {
-            List<Articulo> lista = new List<Articulo>();
-            AccesoDatos datos = new AccesoDatos();
-
-            try
-            {
-                datos.setearProcedimiento("storedListar");
-                datos.ejecutarLectura();
-
-                while (datos.Lector.Read())
-                {
-                    Articulo aux = new Articulo();
-                    aux.Id = (int)datos.Lector["Id"];
-                    aux.Codigo = datos.Lector["Codigo"] != DBNull.Value ? (string)datos.Lector["Codigo"] : null;
-                    aux.Nombre = datos.Lector["Nombre"] != DBNull.Value ? (string)datos.Lector["Nombre"] : null;
-                    aux.Descripcion = datos.Lector["Descripcion"] != DBNull.Value ? (string)datos.Lector["Descripcion"] : null;
-                    aux.Marca = new Marca();
-                    aux.Marca.Id = (int)datos.Lector["IdMarca"];
-                    aux.Marca.Descripcion = datos.Lector["Marca"] != DBNull.Value ? (string)datos.Lector["Marca"] : null;
-                    aux.Categoria = new Categoria();
-                    aux.Categoria.Id = (int)datos.Lector["IdCategoria"];
-                    aux.Categoria.Descripcion = datos.Lector["Categoria"] != DBNull.Value ? (string)datos.Lector["Categoria"] : null;
-                    aux.ImagenUrl = datos.Lector["ImagenUrl"] != DBNull.Value ? (string)datos.Lector["ImagenUrl"] : null;
-                    aux.Precio = (decimal)datos.Lector["Precio"];
-
-                    lista.Add(aux);
-                }
-
-                return lista;
-
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-
         }
 
         public void agregar (Articulo nuevo)
@@ -243,60 +178,75 @@ namespace Negocio
                 throw ex;
             }
         }
-        public List<Articulo> filtrar (string campo, string criterio, string filtro)
+
+        public List<Articulo> filtrar(string campo, string criterio, string filtro)
         {
             List<Articulo> listaFiltrada = new List<Articulo>();
             AccesoDatos datos = new AccesoDatos();
 
             try
             {
-                string consulta = "SELECT A.Id, A.Codigo, A.Nombre, A.Descripcion, A.IdMarca, M.Descripcion as Marca, A.IdCategoria, C.Descripcion as Categoria, A.ImagenUrl, A.Precio FROM ARTICULOS A, MARCAS M, CATEGORIAS C where M.Id = A.IdMarca and C.Id=A.IdCategoria AND ";
+                string consulta = @"
+            SELECT A.Id, A.Codigo, A.Nombre, A.Descripcion, A.IdMarca, M.Descripcion as Marca, A.IdCategoria, C.Descripcion as Categoria, A.ImagenUrl, A.Precio 
+            FROM ARTICULOS A
+            JOIN MARCAS M ON M.Id = A.IdMarca
+            JOIN CATEGORIAS C ON C.Id = A.IdCategoria
+            WHERE 1=1";  // Siempre verdadero para facilitar la concatenación de condiciones
+
+                // Añado condiciones específicas según el campo y criterio
                 switch (campo)
                 {
                     case "Precio":
                         switch (criterio)
                         {
                             case "Mayor a ":
-                                consulta += "Precio > " + filtro;
+                                consulta += " AND A.Precio > @Precio";
+                                datos.setearParametro("@Precio", decimal.Parse(filtro));
                                 break;
                             case "Menor a ":
-                                consulta += "Precio < " + filtro;
+                                consulta += " AND A.Precio < @Precio";
+                                datos.setearParametro("@Precio", decimal.Parse(filtro));
                                 break;
                             case "Igual a ":
-                                consulta += "Precio = " + filtro;
-                                break;
-                        }
-                        break;
-                    case "Nombre":
-                        switch (criterio)
-                        {
-                            case "Comienza con ":
-                                consulta += "Nombre like '" + filtro + "%'";
-                                break;
-                            case "Termina con ":
-                                consulta += "Nombre like '%" + filtro + "'";
-                                break;
-                            case "Contiene ":
-                                consulta += "Nombre like '%'" + filtro + "'%'";
-                                break;
-                        }
-                        break;
-                    case "Marca":
-                        switch (criterio)
-                        {
-                            case "Comienza con ":
-                                consulta += "M.Descripcion like '" + filtro + "%'";
-                                break;
-                            case "Termina con ":
-                                consulta += "M.Descripcion like '%" + filtro + "'";
-                                break;
-                            case "Contiene ":
-                                consulta += "M.Descripcion like '%" + filtro + "%'";
+                                consulta += " AND A.Precio = @Precio";
+                                datos.setearParametro("@Precio", decimal.Parse(filtro));
                                 break;
                         }
                         break;
 
+                    case "Nombre":
+                        switch (criterio)
+                        {
+                            case "Comienza con ":
+                                consulta += " AND Nombre like '" + filtro + "%'";
+                                break;
+                            case "Termina con ":
+                                consulta += " AND Nombre like '%" + filtro + "'";
+                                break;
+                            case "Contiene ":
+                                consulta += " AND Nombre like '%" + filtro + "%'";
+                                break;
+                        }
+                        break;
+
+                    default:
+                        switch (criterio)
+                        {
+                            case "Comienza con ":
+                                consulta += " AND M.Descripcion like '" + filtro + "%'";
+                                break;
+                            case "Termina con ":
+                                consulta += " AND M.Descripcion like '%" + filtro + "'";
+                                break;
+                            case "Contiene ":
+                                consulta += " AND M.Descripcion like '%" + filtro + "%'";
+                                break;
+                        }
+                        break;
                 }
+
+                // Agregar línea de depuración
+                Console.WriteLine("Consulta SQL: " + consulta);
 
                 datos.setearConsulta(consulta);
                 datos.ejecutarLectura();
@@ -321,18 +271,19 @@ namespace Negocio
                 }
 
                 return listaFiltrada;
-
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                throw new Exception("Error en la consulta SQL: " + ex.Message);
             }
-
-            
-
-            
+            finally
+            {
+                datos.cerrarConexion();
+            }
         }
+
+
+
 
         public void limpiar()
         {

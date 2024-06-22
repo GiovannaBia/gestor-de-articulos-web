@@ -11,25 +11,16 @@ namespace WebApplication1
 {
 
 
-    public partial class Login2
+    public partial class Favoritos
     {
 
         /// <summary>
-        /// Control btnPagina1.
+        /// Control repFavoritos.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnPagina1;
-
-        /// <summary>
-        /// Control btnPagina2.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnPagina2;
+        protected global::System.Web.UI.WebControls.Repeater repFavoritos;
     }
 }

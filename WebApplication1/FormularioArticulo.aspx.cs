@@ -94,8 +94,13 @@ namespace WebApplication1
                 }
                 else
                 {
-                    negocio.agregarConSP(nuevo);
+                    negocio.agregar(nuevo);
+
                 }
+
+                List<Articulo> lista = negocio.Listar();
+                Session["listaArticulo"] = lista;
+                
 
                 Response.Redirect("ListaArticulo.aspx", false);
 

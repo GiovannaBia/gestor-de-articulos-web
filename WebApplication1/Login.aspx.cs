@@ -13,31 +13,56 @@ namespace WebApplication1
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!IsPostBack)
+            {
 
+                if (Session["email"] != null)
+                {
+                    txtUser.Text = Session["email"].ToString();
+                   
+                }
+            }
         }
 
         protected void btnIngresar_Click(object sender, EventArgs e)
         {
-            Usuario usuario;
-            UsuarioNegocio negocio = new UsuarioNegocio();
+            Trainee trainee = new Trainee();
+            TraineeNegocio negocio = new TraineeNegocio();
             try
             {
-                usuario = new Usuario(txtUser.Text, txtPass.Text, false);
-                if (negocio.Loguear(usuario))
+                trainee.Email = txtUser.Text;
+                trainee.Pass = txtPass.Text;
+
+                if (string.IsNullOrEmpty(txtUser.Text) || string.IsNullOrEmpty(txtPass.Text))
                 {
-                    Session.Add("usuario", usuario);
-                    Response.Redirect("Login2.aspx", false);
+
+                    if (!string.IsNullOrEmpty(txtUser.Text))
+                    {
+                        Session["email"] = txtUser.Text;
+                    }
+                    Session.Add("error", "Debes completar ambos campos");
+                    Response.Redirect("Error.aspx");
                 }
+
+                if (negocio.Login(trainee))
+                {
+                    Session.Add("trainee", trainee);
+                    Response.Redirect("MiPerfil.aspx");
+                }
+
                 else
                 {
+                    Session["email"] = txtUser.Text; // Guardar el email si hay un error de login
                     Session.Add("error", "User o pass incorrectos");
-                    Response.Redirect("Error.aspx", false);
+                    Response.Redirect("Error.aspx");
                 }
+                
             }
+            catch (System.Threading.ThreadAbortException ex) { }
             catch (Exception ex)
             {
-
-                throw ex;
+                Session.Add("error", ex.ToString());
+                Response.Redirect("Error.aspx");
             }
             
            
