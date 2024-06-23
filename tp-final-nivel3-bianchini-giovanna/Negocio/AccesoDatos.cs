@@ -19,7 +19,7 @@ namespace Negocio
 
         public AccesoDatos() //constructor --> para cada vez que lo instancio, me crea con esa conezion y comando
         {
-            conexion = new SqlConnection("server=DESKTOP-5VE62F0\\SQLEXPRESS; database=CATALOGO_WEB_DB; integrated security=true");
+            conexion = new SqlConnection("workstation id=CATALOGO_WEB_DB23.mssql.somee.com;packet size=4096;user id=giovanna23_SQLLogin_4;pwd=hgr4dkw9uo;data source=CATALOGO_WEB_DB23.mssql.somee.com;persist security info=False;initial catalog=CATALOGO_WEB_DB23;TrustServerCertificate=True");
             comando = new SqlCommand();
 
         }

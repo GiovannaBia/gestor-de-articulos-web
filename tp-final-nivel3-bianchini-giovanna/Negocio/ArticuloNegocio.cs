@@ -65,7 +65,7 @@ namespace Negocio
             try
             {
                 //configuro 
-                conexion.ConnectionString = "server=DESKTOP-5VE62F0\\SQLEXPRESS; database=CATALOGO_WEB_DB; integrated security=true";
+                conexion.ConnectionString = "workstation id=CATALOGO_WEB_DB23.mssql.somee.com;packet size=4096;user id=giovanna23_SQLLogin_4;pwd=hgr4dkw9uo;data source=CATALOGO_WEB_DB23.mssql.somee.com;persist security info=False;initial catalog=CATALOGO_WEB_DB23;TrustServerCertificate=True";
                 comando.CommandType = System.Data.CommandType.Text;
                 comando.CommandText = "SELECT A.Id, A.Codigo, A.Nombre, A.Descripcion, A.IdMarca, M.Descripcion as Marca, A.IdCategoria, C.Descripcion as Categoria, A.ImagenUrl, A.Precio FROM ARTICULOS A, MARCAS M, CATEGORIAS C where M.Id = A.IdMarca and C.Id=A.IdCategoria ";
                 if (id != "")
